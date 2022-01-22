@@ -3,11 +3,12 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 
 public class Sprite {
-
-    private int dx;
-    private int dy;
+    private static final int GROUND_LEVEL = 202;
+    private int directionX;
+    private int directionY;
+    private boolean isJumping = false;
     private int x = 40;
-    private int y = 200;
+    private int y = GROUND_LEVEL;
     private int width;
     private int height;
     private Image image;
@@ -25,8 +26,24 @@ public class Sprite {
     }
 
     public void move() {
-        x += dx;
-        y += dy;
+        x += directionX;
+        y += directionY;
+    }
+
+    public void jump() {
+        boolean isOnGroundLevel = !isJumping && this.y == GROUND_LEVEL;
+        if (isOnGroundLevel) {
+            directionY = -2;
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            directionY = 2;
+                            isJumping = true;
+                        }
+                    }, 800
+            );
+        }
     }
 
     public int getX() {
@@ -37,8 +54,8 @@ public class Sprite {
         return y;
     }
 
-    public void setDy(int dy) {
-        this.dy = dy;
+    public void setDirectionY(int directionY) {
+        this.directionY = directionY;
     }
 
     public int getWidth() {
@@ -57,21 +74,13 @@ public class Sprite {
         int key = keyEvent.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            dx = -2;
+            directionX = -2;
         }
         if (key == KeyEvent.VK_RIGHT) {
-            dx = 2;
+            directionX = 2;
         }
         if (key == KeyEvent.VK_SPACE) {
-            dy = -2;
-            new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            dy = 2;
-                        }
-                    }, 800
-            );
+            jump();
         }
     }
 
@@ -79,10 +88,13 @@ public class Sprite {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            dx = 0;
+            directionX = 0;
         }
         if (key == KeyEvent.VK_RIGHT) {
-            dx = 0;
+            directionX = 0;
+        }
+        if (key == KeyEvent.VK_SPACE) {
+            isJumping = false;
         }
     }
 }

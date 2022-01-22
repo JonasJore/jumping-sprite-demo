@@ -35,7 +35,7 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(graphics);
 
         if (sprite.getY() > 200) {
-            sprite.setDy(0);
+            sprite.setDirectionY(0);
         }
         initDrawing(graphics);
 
